@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using static MemoryBall.SafeNativeMethods;
@@ -35,14 +33,5 @@ namespace MemoryBall
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
-
-        private void Window_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetData(DataFormats.FileDrop) == null)
-                return;
-            FileSystem.DeleteFile(
-                ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString(),
-                UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
-        }
     }
 }

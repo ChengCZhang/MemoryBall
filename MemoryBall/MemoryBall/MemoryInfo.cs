@@ -100,7 +100,7 @@ namespace MemoryBall
         #region 信息更新函数
         private void UpdateMemoryInfo()
         {
-            MemoryLoad = memLoad.ToString() + "%";
+            MemoryLoad = $"{memLoad}%";
             if (memLoad < 25)
             {
                 IsLargeArc = false;
