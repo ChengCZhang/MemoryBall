@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Media;
 
 namespace MemoryBall
 {
@@ -81,6 +82,20 @@ namespace MemoryBall
             }
         }
 
+        private Brush fillColor;
+        public Brush FillColor
+        {
+            get { return fillColor; }
+            set
+            {
+                if (fillColor != value)
+                {
+                    fillColor = value;
+                    PropertyChanged(this, new PropertyChangedEventArgs("FillColor"));
+                }
+            }
+        }
+
 
         private int memLoad;
         public int MemLoad
@@ -88,6 +103,7 @@ namespace MemoryBall
             get { return memLoad; }
             set
             {
+                FillColor = SystemParameters.WindowGlassBrush;
                 if (memLoad != value)
                 {
                     memLoad = value;
