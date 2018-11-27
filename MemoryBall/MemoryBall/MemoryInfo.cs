@@ -6,36 +6,34 @@ namespace MemoryBall
 {
     public class MemoryInfo : INotifyPropertyChanged
     {
-        private readonly double[] table;
-        private readonly int r, R, offset;
+        private readonly double[] _table;
+        private readonly int _r, _rR, _offset;
 
         public MemoryInfo()
         {
-            table = new double[26]
+            _table = new double[26]
             {0, 0.06279052, 0.125333234, 0.187381315, 0.248689887, 0.309016994,
                 0.368124553, 0.425779292, 0.481753674, 0.535826795, 0.587785252,
                 0.63742399, 0.684547106, 0.728968627, 0.770513243, 0.809016994,
                 0.844327926, 0.87630668, 0.904827052, 0.929776486, 0.951056516,
                 0.968583161, 0.982287251, 0.992114701, 0.998026728, 1};
-            r = 26;
-            R = 36;
-            offset = 38;
-            innerPoint = outerPoint = _inner = _outer = new Point(38, 2);
+            _r = 26;
+            _rR = 36;
+            _offset = 38;
+            _innerPoint = outerPoint = _inner = _outer = new Point(38, 2);
         }
 
         #region 属性
         private Point _inner;
-        private Point innerPoint;
+        private Point _innerPoint;
         public Point InnerPoint
         {
-            get { return innerPoint; }
+            get => _innerPoint;
             private set
             {
-                if (innerPoint != value)
-                {
-                    innerPoint = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("InnerPoint"));
-                }
+                if (_innerPoint == value) return;
+                _innerPoint = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InnerPoint"));
             }
         }
 
@@ -43,72 +41,62 @@ namespace MemoryBall
         private Point outerPoint;
         public Point OuterPoint
         {
-            get { return outerPoint; }
+            get => outerPoint;
             private set
             {
-                if (outerPoint != value)
-                {
-                    outerPoint = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("OuterPoint"));
-                }
+                if (outerPoint == value) return;
+                outerPoint = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OuterPoint"));
             }
         }
 
-        private string memoryLoad;
+        private string _memoryLoad;
         public string MemoryLoad
         {
-            get { return memoryLoad; }
+            get => _memoryLoad;
             private set
             {
-                if (memoryLoad != value)
-                {
-                    memoryLoad = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("MemoryLoad"));
-                }
+                if (_memoryLoad == value) return;
+                _memoryLoad = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MemoryLoad"));
             }
         }
 
-        private bool isLargeArc;
+        private bool _isLargeArc;
         public bool IsLargeArc
         {
-            get { return isLargeArc; }
+            get => _isLargeArc;
             set
             {
-                if (isLargeArc != value)
-                {
-                    isLargeArc = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("IsLargeArc"));
-                }
+                if (_isLargeArc == value) return;
+                _isLargeArc = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsLargeArc"));
             }
         }
 
-        private Brush fillColor;
+        private Brush _fillColor;
         public Brush FillColor
         {
-            get { return fillColor; }
+            get => _fillColor;
             set
             {
-                if (fillColor != value)
-                {
-                    fillColor = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("FillColor"));
-                }
+                if (_fillColor == value) return;
+                _fillColor = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FillColor"));
             }
         }
 
 
-        private int memLoad;
+        private int _memLoad;
         public int MemLoad
         {
-            get { return memLoad; }
+            get => _memLoad;
             set
             {
                 FillColor = SystemParameters.WindowGlassBrush;
-                if (memLoad != value)
-                {
-                    memLoad = value;
-                    UpdateMemoryInfo();
-                }
+                if (_memLoad == value) return;
+                _memLoad = value;
+                UpdateMemoryInfo();
             }
         }
         #endregion
@@ -116,56 +104,61 @@ namespace MemoryBall
         #region 信息更新函数
         private void UpdateMemoryInfo()
         {
-            MemoryLoad = $"{memLoad}%";
-            if (memLoad < 25)
+            MemoryLoad = $"{_memLoad.ToString()}%";
+            if (_memLoad < 25)
             {
                 IsLargeArc = false;
-                UpdatePointTX(memLoad);
-                UpdatePointFY(25 - memLoad);
-                goto end;
+                UpdatePointTx(_memLoad);
+                UpdatePointFy(25 - _memLoad);
+                InnerPoint = _inner;
+                OuterPoint = _outer;
+                return;
             }
-            if (memLoad < 50)
+            if (_memLoad < 50)
             {
                 IsLargeArc = false;
-                UpdatePointTX(50 - memLoad);
-                UpdatePointTY(memLoad - 25);
-                goto end;
+                UpdatePointTx(50 - _memLoad);
+                UpdatePointTy(_memLoad - 25);
+                InnerPoint = _inner;
+                OuterPoint = _outer;
+                return;
             }
-            if (memLoad < 75)
+            if (_memLoad < 75)
             {
                 IsLargeArc = true;
-                UpdatePointFX(memLoad - 50);
-                UpdatePointTY(75 - memLoad);
-                goto end;
+                UpdatePointFx(_memLoad - 50);
+                UpdatePointTy(75 - _memLoad);
+                InnerPoint = _inner;
+                OuterPoint = _outer;
+                return;
             }
             IsLargeArc = true;
-            UpdatePointFX(100 - memLoad);
-            UpdatePointFY(memLoad - 75);
-            end:
+            UpdatePointFx(100 - _memLoad);
+            UpdatePointFy(_memLoad - 75);
             InnerPoint = _inner;
             OuterPoint = _outer;
         }
 
-        private void UpdatePointTX(int x)
+        private void UpdatePointTx(int x)
         {
-            _inner.X = offset + r * table[x];
-            _outer.X = offset + R * table[x];
+            _inner.X = _offset + _r * _table[x];
+            _outer.X = _offset + _rR * _table[x];
         }
-        private void UpdatePointFX(int x)
+        private void UpdatePointFx(int x)
         {
-            _inner.X = offset - r * table[x];
-            _outer.X = offset - R * table[x];
+            _inner.X = _offset - _r * _table[x];
+            _outer.X = _offset - _rR * _table[x];
         }
 
-        private void UpdatePointTY(int y)
+        private void UpdatePointTy(int y)
         {
-            _inner.Y = offset + r * table[y];
-            _outer.Y = offset + R * table[y];
+            _inner.Y = _offset + _r * _table[y];
+            _outer.Y = _offset + _rR * _table[y];
         }
-        private void UpdatePointFY(int y)
+        private void UpdatePointFy(int y)
         {
-            _inner.Y = offset - r * table[y];
-            _outer.Y = offset - R * table[y];
+            _inner.Y = _offset - _r * _table[y];
+            _outer.Y = _offset - _rR * _table[y];
         }
         #endregion
         public event PropertyChangedEventHandler PropertyChanged;

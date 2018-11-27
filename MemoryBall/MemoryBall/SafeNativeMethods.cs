@@ -10,7 +10,7 @@ namespace MemoryBall
         //https://msdn.microsoft.com/en-us/library/aa366589(VS.85).aspx
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct MEMORYSTATUSEX
+        public struct Memorystatusex
         {
 
             /// DWORD->unsigned int
@@ -64,7 +64,7 @@ namespace MemoryBall
         ///lpBuffer: LPMEMORYSTATUSEX->_MEMORYSTATUSEX*
         [DllImport("kernel32.dll", EntryPoint = "GlobalMemoryStatusEx")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GlobalMemoryStatusEx([Out()] out MEMORYSTATUSEX lpBuffer);
+        public static extern bool GlobalMemoryStatusEx([Out()] out Memorystatusex lpBuffer);
 
         #endregion
 
