@@ -20,7 +20,7 @@ namespace MemoryBall
             _r = 26;
             _rR = 36;
             _offset = 38;
-            _innerPoint = outerPoint = _inner = _outer = new Point(38, 2);
+            _innerPoint = _outerPoint = _inner = _outer = new Point(38, 2);
         }
 
         #region 属性
@@ -38,14 +38,14 @@ namespace MemoryBall
         }
 
         private Point _outer;
-        private Point outerPoint;
+        private Point _outerPoint;
         public Point OuterPoint
         {
-            get => outerPoint;
+            get => _outerPoint;
             private set
             {
-                if (outerPoint == value) return;
-                outerPoint = value;
+                if (_outerPoint == value) return;
+                _outerPoint = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OuterPoint"));
             }
         }
