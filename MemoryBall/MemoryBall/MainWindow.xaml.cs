@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Input;
 using static MemoryBall.SafeNativeMethods;
 
@@ -32,5 +33,11 @@ namespace MemoryBall
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Left = SystemParameters.PrimaryScreenWidth - 2 * Width;
+            Top = 2 * Height;
+        }
     }
 }
