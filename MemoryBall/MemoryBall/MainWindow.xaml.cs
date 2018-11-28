@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using static MemoryBall.SafeNativeMethods;
 
 namespace MemoryBall
@@ -44,6 +45,9 @@ namespace MemoryBall
         {
             Left = SystemParameters.PrimaryScreenWidth - 2 * Width;
             Top = Height;
+
+            WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+            SetWindowLong(wndHelper.Handle, -20, (IntPtr)((int)GetWindowLong(wndHelper.Handle, -20) | 0x00000080));
         }
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)

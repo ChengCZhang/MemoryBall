@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Security;
 
 namespace MemoryBall
@@ -66,6 +67,33 @@ namespace MemoryBall
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GlobalMemoryStatusEx([Out()] out Memorystatusex lpBuffer);
 
+        #endregion
+
+        #region Window styles
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+
+        public static void SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+
+            if (IntPtr.Size == 4)
+            {
+                // use SetWindowLong
+                IntSetWindowLong(hWnd, nIndex, dwNewLong);
+            }
+            else
+            {
+                // use SetWindowLongPtr
+                IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
+            }
+        }
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
+        private static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
+        private static extern IntPtr IntSetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
         #endregion
 
     }
