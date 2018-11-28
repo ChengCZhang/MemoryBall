@@ -73,33 +73,17 @@ namespace MemoryBall
             _infoUpdatetimer.Stop();
             await Task.Run(() =>
             {
-                Process.Start("ie4uinit.exe", "-show");
-                //foreach (var p in Process.GetProcesses())
-                //{
-                //    if (p.Responding) continue;
-                //    try
-                //    {
-                //        p.Kill();
-                //    }
-                //    catch 
-                //    {
-
-                //    }
-                    
-                //}
-
-                GC.Collect();
-                GC.WaitForFullGCComplete();
-            });
-
-            await Task.Run(() =>
-            {
                 var temp = _memoryInfo.MemLoad;
                 for (int i = temp; i >= 0; i -= 2)
                 {
                     _memoryInfo.MemLoad = i;
                     Thread.Sleep(15);
                 }
+
+                Process.Start("ie4uinit.exe", "-show");
+
+                GC.Collect();
+                GC.WaitForFullGCComplete();
 
                 for (int i = 0; i <= temp; i += 2)
                 {
