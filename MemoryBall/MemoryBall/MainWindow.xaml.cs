@@ -1,4 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Management;
+using Microsoft.VisualBasic.FileIO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -74,6 +77,76 @@ namespace MemoryBall
                 _memoryInfo.MemLoad = temp;
             });
             _infoUpdatetimer.Start();
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            var temp = e.Data.GetData(DataFormats.FileDrop);
+            if (temp == null)
+            {
+                return;
+            }
+
+            FileSystem.DeleteFile(
+                ((Array)temp).GetValue(0).ToString(),
+                UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+        }
+
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            int currentBrightness = 50;
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(new ManagementScope("root\\WMI"), new SelectQuery("WmiMonitorBrightness")))
+            {
+                using (ManagementObjectCollection objectCollection = searcher.Get())
+                {
+                    foreach (var o in objectCollection)
+                    {
+                        currentBrightness = Convert.ToInt32(((ManagementObject)o).Properties["CurrentBrightness"].Value);
+                        break;
+                    }
+                }
+            }
+
+            if (e.Delta > 0)
+            {
+                if (currentBrightness >= 100)
+                {
+                    return;
+                }
+
+                currentBrightness += 5;
+                if (currentBrightness > 100)
+                {
+                    currentBrightness = 100;
+                }
+            }
+            else
+            {
+                if (currentBrightness <= 0)
+                {
+                    return;
+                }
+                currentBrightness -= 5;
+                if (currentBrightness < 0)
+                {
+                    currentBrightness = 0;
+                }
+            }
+
+
+
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(new ManagementScope("root\\WMI"), new SelectQuery("WmiMonitorBrightnessMethods")))
+            {
+                using (ManagementObjectCollection objectCollection = searcher.Get())
+                {
+                    foreach (var o in objectCollection)
+                    {
+                        ((ManagementObject)o).InvokeMethod("WmiSetBrightness",
+                            new object[] { uint.MaxValue, currentBrightness});
+                        break;
+                    }
+                }
+            }
         }
     }
 }
