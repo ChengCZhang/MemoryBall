@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Management;
 using Microsoft.VisualBasic.FileIO;
 using System.Runtime.InteropServices;
@@ -59,7 +60,25 @@ namespace MemoryBall
 
         private async void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
             _infoUpdatetimer.Stop();
+            await Task.Run(() =>
+            {
+                foreach (var p in Process.GetProcesses())
+                {
+                    if (p.Responding) continue;
+
+                    p.Kill();
+                }
+
+                GC.Collect();
+                GC.WaitForFullGCComplete();
+            });
+
             await Task.Run(() =>
             {
                 var temp = _memoryInfo.MemLoad;
@@ -68,6 +87,7 @@ namespace MemoryBall
                     _memoryInfo.MemLoad = i;
                     Thread.Sleep(15);
                 }
+
                 for (int i = 0; i <= temp; i+=2)
                 {
                     Thread.Sleep(15);
