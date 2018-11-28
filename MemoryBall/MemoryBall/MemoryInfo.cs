@@ -11,7 +11,7 @@ namespace MemoryBall
 
         public MemoryInfo()
         {
-            _table = new double[26]
+            _table = new[]
             {0, 0.06279052, 0.125333234, 0.187381315, 0.248689887, 0.309016994,
                 0.368124553, 0.425779292, 0.481753674, 0.535826795, 0.587785252,
                 0.63742399, 0.684547106, 0.728968627, 0.770513243, 0.809016994,
@@ -74,26 +74,12 @@ namespace MemoryBall
             }
         }
 
-        private Brush _fillColor;
-        public Brush FillColor
-        {
-            get => _fillColor;
-            set
-            {
-                if (_fillColor == value) return;
-                _fillColor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FillColor"));
-            }
-        }
-
-
         private int _memLoad;
         public int MemLoad
         {
             get => _memLoad;
             set
             {
-                FillColor = SystemParameters.WindowGlassBrush;
                 if (_memLoad == value) return;
                 _memLoad = value;
                 UpdateMemoryInfo();
@@ -108,8 +94,10 @@ namespace MemoryBall
             if (_memLoad < 25)
             {
                 IsLargeArc = false;
-                UpdatePointTx(_memLoad);
-                UpdatePointFy(25 - _memLoad);
+                _inner.X = _offset + _r * _table[_memLoad];
+                _outer.X = _offset + _rR * _table[_memLoad];
+                _inner.Y = _offset - _r * _table[25 - _memLoad];
+                _outer.Y = _offset - _rR * _table[25 - _memLoad];
                 InnerPoint = _inner;
                 OuterPoint = _outer;
                 return;
@@ -117,8 +105,10 @@ namespace MemoryBall
             if (_memLoad < 50)
             {
                 IsLargeArc = false;
-                UpdatePointTx(50 - _memLoad);
-                UpdatePointTy(_memLoad - 25);
+                _inner.X = _offset + _r * _table[50 - _memLoad];
+                _outer.X = _offset + _rR * _table[50 - _memLoad];
+                _inner.Y = _offset + _r * _table[_memLoad - 25];
+                _outer.Y = _offset + _rR * _table[_memLoad - 25];
                 InnerPoint = _inner;
                 OuterPoint = _outer;
                 return;
@@ -126,40 +116,23 @@ namespace MemoryBall
             if (_memLoad < 75)
             {
                 IsLargeArc = true;
-                UpdatePointFx(_memLoad - 50);
-                UpdatePointTy(75 - _memLoad);
+                _inner.X = _offset - _r * _table[_memLoad - 50];
+                _outer.X = _offset - _rR * _table[_memLoad - 50];
+                _inner.Y = _offset + _r * _table[75 - _memLoad];
+                _outer.Y = _offset + _rR * _table[75 - _memLoad];
                 InnerPoint = _inner;
                 OuterPoint = _outer;
                 return;
             }
             IsLargeArc = true;
-            UpdatePointFx(100 - _memLoad);
-            UpdatePointFy(_memLoad - 75);
+            _inner.X = _offset - _r * _table[100 - _memLoad];
+            _outer.X = _offset - _rR * _table[100 - _memLoad];
+            _inner.Y = _offset - _r * _table[_memLoad - 75];
+            _outer.Y = _offset - _rR * _table[_memLoad - 75];
             InnerPoint = _inner;
             OuterPoint = _outer;
         }
 
-        private void UpdatePointTx(int x)
-        {
-            _inner.X = _offset + _r * _table[x];
-            _outer.X = _offset + _rR * _table[x];
-        }
-        private void UpdatePointFx(int x)
-        {
-            _inner.X = _offset - _r * _table[x];
-            _outer.X = _offset - _rR * _table[x];
-        }
-
-        private void UpdatePointTy(int y)
-        {
-            _inner.Y = _offset + _r * _table[y];
-            _outer.Y = _offset + _rR * _table[y];
-        }
-        private void UpdatePointFy(int y)
-        {
-            _inner.Y = _offset - _r * _table[y];
-            _outer.Y = _offset - _rR * _table[y];
-        }
         #endregion
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
