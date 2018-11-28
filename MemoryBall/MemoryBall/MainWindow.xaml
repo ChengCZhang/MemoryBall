@@ -23,7 +23,7 @@
                 </PathGeometry>
             </Path.Data>
         </Path>
-        <TextBlock Text="{Binding  Path=MemoryLoad}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Wheat"  
+        <TextBlock Text="{Binding  Path=MemoryLoad}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="WhiteSmoke"  
                    FontFamily="Consolas" FontSize="18" />
     </Grid>
 </Window>
