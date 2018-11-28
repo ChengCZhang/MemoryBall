@@ -65,35 +65,38 @@ namespace MemoryBall
 
         private async void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton != MouseButton.Left)
+            switch (e.ChangedButton)
             {
-                return;
+                case MouseButton.Left:
+                    _infoUpdatetimer.Stop();
+                    await Task.Run(() =>
+                    {
+                        var temp = _memoryInfo.MemLoad;
+                        for (int i = temp; i >= 0; i -= 2)
+                        {
+                            _memoryInfo.MemLoad = i;
+                            Thread.Sleep(15);
+                        }
+
+                        Process.Start("ie4uinit", "-show");
+
+                        GC.Collect();
+                        GC.WaitForFullGCComplete();
+
+                        for (int i = 0; i <= temp; i += 2)
+                        {
+                            Thread.Sleep(15);
+                            _memoryInfo.MemLoad = i;
+                        }
+
+                        _memoryInfo.MemLoad = temp;
+                    });
+                    _infoUpdatetimer.Start();
+                    break;
+                case MouseButton.Right:
+                    Process.Start("taskmgr");
+                    break;
             }
-
-            _infoUpdatetimer.Stop();
-            await Task.Run(() =>
-            {
-                var temp = _memoryInfo.MemLoad;
-                for (int i = temp; i >= 0; i -= 2)
-                {
-                    _memoryInfo.MemLoad = i;
-                    Thread.Sleep(15);
-                }
-
-                Process.Start("ie4uinit.exe", "-show");
-
-                GC.Collect();
-                GC.WaitForFullGCComplete();
-
-                for (int i = 0; i <= temp; i += 2)
-                {
-                    Thread.Sleep(15);
-                    _memoryInfo.MemLoad = i;
-                }
-
-                _memoryInfo.MemLoad = temp;
-            });
-            _infoUpdatetimer.Start();
         }
 
         private void Window_Drop(object sender, DragEventArgs e)
