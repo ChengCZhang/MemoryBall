@@ -46,8 +46,9 @@ namespace MemoryBall
             Left = SystemParameters.PrimaryScreenWidth - 2 * Width;
             Top = Height;
 
-            WindowInteropHelper wndHelper = new WindowInteropHelper(this);
-            SetWindowLong(wndHelper.Handle, -20, (IntPtr)((int)GetWindowLong(wndHelper.Handle, -20) | 0x00000080));
+            //https://stackoverflow.com/questions/357076/best-way-to-hide-a-window-from-the-alt-tab-program-switcher
+            var handle = new WindowInteropHelper(this).Handle;
+            SetWindowLong(handle, -20, (IntPtr)((int)GetWindowLong(handle, -20) | 0x00000080));
         }
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)
@@ -72,12 +73,20 @@ namespace MemoryBall
             _infoUpdatetimer.Stop();
             await Task.Run(() =>
             {
-                foreach (var p in Process.GetProcesses())
-                {
-                    if (p.Responding) continue;
+                Process.Start("ie4uinit.exe", "-show");
+                //foreach (var p in Process.GetProcesses())
+                //{
+                //    if (p.Responding) continue;
+                //    try
+                //    {
+                //        p.Kill();
+                //    }
+                //    catch 
+                //    {
 
-                    p.Kill();
-                }
+                //    }
+                    
+                //}
 
                 GC.Collect();
                 GC.WaitForFullGCComplete();
@@ -86,13 +95,13 @@ namespace MemoryBall
             await Task.Run(() =>
             {
                 var temp = _memoryInfo.MemLoad;
-                for (int i = temp; i >= 0; i-=2)
+                for (int i = temp; i >= 0; i -= 2)
                 {
                     _memoryInfo.MemLoad = i;
                     Thread.Sleep(15);
                 }
 
-                for (int i = 0; i <= temp; i+=2)
+                for (int i = 0; i <= temp; i += 2)
                 {
                     Thread.Sleep(15);
                     _memoryInfo.MemLoad = i;
@@ -150,6 +159,7 @@ namespace MemoryBall
                 {
                     return;
                 }
+
                 currentBrightness -= 5;
                 if (currentBrightness < 0)
                 {
@@ -166,7 +176,7 @@ namespace MemoryBall
                     foreach (var o in objectCollection)
                     {
                         ((ManagementObject)o).InvokeMethod("WmiSetBrightness",
-                            new object[] { uint.MaxValue, currentBrightness});
+                            new object[] { uint.MaxValue, currentBrightness });
                         break;
                     }
                 }

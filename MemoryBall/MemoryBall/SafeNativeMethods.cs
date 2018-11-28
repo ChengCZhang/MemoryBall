@@ -89,10 +89,10 @@ namespace MemoryBall
             }
         }
 
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
         private static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
         private static extern IntPtr IntSetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
         #endregion
 
