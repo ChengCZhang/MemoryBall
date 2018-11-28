@@ -115,6 +115,7 @@ namespace MemoryBall
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             int currentBrightness = 50;
+            //https://blogs.technet.microsoft.com/heyscriptingguy/2013/07/25/use-powershell-to-report-and-set-monitor-brightness/
             using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(new ManagementScope("root\\WMI"), new SelectQuery("WmiMonitorBrightness")))
             {
                 using (ManagementObjectCollection objectCollection = searcher.Get())
@@ -154,8 +155,7 @@ namespace MemoryBall
                 }
             }
 
-
-
+            _infoUpdatetimer.Stop();
             using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(new ManagementScope("root\\WMI"), new SelectQuery("WmiMonitorBrightnessMethods")))
             {
                 using (ManagementObjectCollection objectCollection = searcher.Get())
@@ -164,10 +164,12 @@ namespace MemoryBall
                     {
                         ((ManagementObject)o).InvokeMethod("WmiSetBrightness",
                             new object[] { uint.MaxValue, currentBrightness });
+                        _memoryInfo.MemLoad = currentBrightness;
                         break;
                     }
                 }
             }
+            _infoUpdatetimer.Start();
         }
     }
 }

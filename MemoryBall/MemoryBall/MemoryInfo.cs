@@ -129,6 +129,7 @@ namespace MemoryBall
             _outer.X = _offset - _rR * _table[100 - _memLoad];
             _inner.Y = _offset - _r * _table[_memLoad - 75];
             _outer.Y = _offset - _rR * _table[_memLoad - 75];
+
             InnerPoint = _inner;
             OuterPoint = _outer;
         }
