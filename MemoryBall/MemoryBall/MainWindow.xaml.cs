@@ -166,7 +166,6 @@ namespace MemoryBall
                         ((ManagementObject)o).InvokeMethod("WmiSetBrightness", new object[] { uint.MaxValue, currentBrightness });
                         _memoryInfo.MemLoad = currentBrightness;
                         _memoryInfo.FillColor = "DeepPink";
-                        break;
                     }
                 }
             }

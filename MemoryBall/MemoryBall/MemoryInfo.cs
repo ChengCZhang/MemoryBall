@@ -31,7 +31,7 @@ namespace MemoryBall
             {
                 if (_innerPoint == value) return;
                 _innerPoint = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InnerPoint"));
+                OnPropertyChanged("InnerPoint");
             }
         }
 
@@ -44,7 +44,7 @@ namespace MemoryBall
             {
                 if (_outerPoint == value) return;
                 _outerPoint = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OuterPoint"));
+                OnPropertyChanged("OuterPoint");
             }
         }
 
@@ -56,7 +56,7 @@ namespace MemoryBall
             {
                 if (_memoryLoad == value) return;
                 _memoryLoad = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MemoryLoad"));
+                OnPropertyChanged("MemoryLoad");
             }
         }
 
@@ -69,7 +69,7 @@ namespace MemoryBall
                 if (_fillColor == value) return;
 
                 _fillColor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FillColor"));
+                OnPropertyChanged("FillColor");
             }
         }
 
@@ -81,7 +81,7 @@ namespace MemoryBall
             {
                 if (_isLargeArc == value) return;
                 _isLargeArc = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsLargeArc"));
+                OnPropertyChanged("IsLargeArc");
             }
         }
 
@@ -137,20 +137,21 @@ namespace MemoryBall
             }
             IsLargeArc = true;
 
-            if (_memLoad == 100)
-            {
-                _inner.X = Offset - R * 0.008726535;
-                _inner.Y = Offset - R * 0.999961923;
-                _outer.X = Offset - Rr * 0.008726535;
-                _outer.Y = Offset - Rr * 0.999961923;
-            }
-            else
+            if (_memLoad < 100)
             {
                 _inner.X = Offset - R * _table[100 - _memLoad];
                 _inner.Y = Offset - R * _table[_memLoad - 75];
                 _outer.X = Offset - Rr * _table[100 - _memLoad];
                 _outer.Y = Offset - Rr * _table[_memLoad - 75];
+                InnerPoint = _inner;
+                OuterPoint = _outer;
+                return;
             }
+
+            _inner.X = Offset - R * 0.008726535;
+            _inner.Y = Offset - R * 0.999961923;
+            _outer.X = Offset - Rr * 0.008726535;
+            _outer.Y = Offset - Rr * 0.999961923;
 
             InnerPoint = _inner;
             OuterPoint = _outer;
