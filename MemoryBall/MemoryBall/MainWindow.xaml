@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MemoryBall"
         mc:Ignorable="d"
         Title="Memory" Height="76" Width="76" WindowStyle="None" AllowsTransparency="True" 
         Background="Transparent" IsTabStop="False" Topmost="True" 
@@ -11,7 +10,7 @@
         Loaded="Window_Loaded" MouseEnter="Window_MouseEnter" MouseLeave="Window_MouseLeave" MouseDoubleClick="Window_MouseDoubleClick" Drop="Window_Drop" MouseWheel="Window_MouseWheel">
     <Grid Name="MainGrid" Cursor="Hand" Opacity="0.8">
         <Border Name="MainBorder" BorderThickness="0" CornerRadius="38" Background="#FF1E1E1E" Opacity="0.3"/>
-        <Path Fill="LawnGreen" Opacity="0.8">
+        <Path Fill="{Binding Path=FillColor}" Opacity="0.8">
             <Path.Data>
                 <PathGeometry>
                     <PathFigure StartPoint="38,12" IsClosed="True">

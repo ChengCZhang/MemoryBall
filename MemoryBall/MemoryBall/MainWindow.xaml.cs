@@ -37,6 +37,7 @@ namespace MemoryBall
         {
             GlobalMemoryStatusEx(out _mEmorystatusex);
             _memoryInfo.MemLoad = _mEmorystatusex.dwMemoryLoad;
+            _memoryInfo.FillColor = "LawnGreen";
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
@@ -162,9 +163,9 @@ namespace MemoryBall
                 {
                     foreach (var o in objectCollection)
                     {
-                        ((ManagementObject)o).InvokeMethod("WmiSetBrightness",
-                            new object[] { uint.MaxValue, currentBrightness });
+                        ((ManagementObject)o).InvokeMethod("WmiSetBrightness", new object[] { uint.MaxValue, currentBrightness });
                         _memoryInfo.MemLoad = currentBrightness;
+                        _memoryInfo.FillColor = "DeepPink";
                         break;
                     }
                 }
