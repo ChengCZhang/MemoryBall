@@ -115,80 +115,68 @@ namespace MemoryBall
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            _infoUpdatetimer.Stop();
-            int target = 50;
-            int current = 50;
+            int currentBrightness = 50;
             //https://blogs.technet.microsoft.com/heyscriptingguy/2013/07/25/use-powershell-to-report-and-set-monitor-brightness/
-            using (ManagementObjectSearcher s1 = new ManagementObjectSearcher(new ManagementScope("root\\WMI"), new SelectQuery("WmiMonitorBrightness")))
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(new ManagementScope("root\\WMI"), new SelectQuery("WmiMonitorBrightness")))
             {
-                using (ManagementObjectCollection o1 = s1.Get())
+                using (ManagementObjectCollection objectCollection = searcher.Get())
                 {
-                    foreach (var o in o1)
+                    foreach (var o in objectCollection)
                     {
-                        current = Convert.ToInt32(((ManagementObject)o).Properties["CurrentBrightness"].Value);
+                        currentBrightness = Convert.ToInt32(((ManagementObject)o).Properties["CurrentBrightness"].Value);
                         break;
                     }
-
-
-                    if (e.Delta > 0)
-                    {
-                        if (current >= 100)
-                        {
-                            _memoryInfo.MemLoad = current;
-                            _memoryInfo.FillColor = "DeepPink";
-                            _infoUpdatetimer.Start();
-                            return;
-                        }
-
-                        target = current + 5;
-                        if (target > 100)
-                        {
-                            target = 100;
-                        }
-                    }
-                    else
-                    {
-                        if (current <= 0)
-                        {
-                            _memoryInfo.MemLoad = current;
-                            _memoryInfo.FillColor = "DeepPink";
-                            _infoUpdatetimer.Start();
-                            return;
-                        }
-
-                        target = current - 5;
-                        if (target < 0)
-                        {
-                            target = 0;
-                        }
-                    }
-
-                    using (ManagementObjectSearcher s2 = new ManagementObjectSearcher(new ManagementScope("root\\WMI"), new SelectQuery("WmiMonitorBrightnessMethods")))
-                    {
-                        using (ManagementObjectCollection o2 = s2.Get())
-                        {
-                            foreach (var o in o2)
-                            {
-                                ((ManagementObject)o).InvokeMethod("WmiSetBrightness", new object[] { uint.MaxValue, target });
-                                break;
-                            }
-                        }
-                    }
-
-                    foreach (var o in o1)
-                    {
-                        if (current == Convert.ToInt32(((ManagementObject)o).Properties["CurrentBrightness"].Value))
-                        {
-                            _infoUpdatetimer.Start();
-                            return;
-                        }
-                        break;
-                    }
-                    _memoryInfo.MemLoad = current;
-                    _memoryInfo.FillColor = "DeepPink";
-                    _infoUpdatetimer.Start();
                 }
             }
+
+            if (e.Delta > 0)
+            {
+                if (currentBrightness >= 100)
+                {
+                    _memoryInfo.MemLoad = currentBrightness;
+                    _memoryInfo.FillColor = "DeepPink";
+                    _infoUpdatetimer.Start();
+                    return;
+                }
+
+                currentBrightness += 5;
+                if (currentBrightness > 100)
+                {
+                    currentBrightness = 100;
+                }
+            }
+            else
+            {
+                if (currentBrightness <= 0)
+                {
+                    _memoryInfo.MemLoad = currentBrightness;
+                    _memoryInfo.FillColor = "DeepPink";
+                    _infoUpdatetimer.Start();
+                    return;
+                }
+
+                currentBrightness -= 5;
+                if (currentBrightness < 0)
+                {
+                    currentBrightness = 0;
+                }
+            }
+
+            _infoUpdatetimer.Stop();
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(new ManagementScope("root\\WMI"), new SelectQuery("WmiMonitorBrightnessMethods")))
+            {
+                using (ManagementObjectCollection objectCollection = searcher.Get())
+                {
+                    foreach (var o in objectCollection)
+                    {
+                        ((ManagementObject)o).InvokeMethod("WmiSetBrightness", new object[] { uint.MaxValue, currentBrightness });
+                        _memoryInfo.MemLoad = currentBrightness;
+                        _memoryInfo.FillColor = "DeepPink";
+                        break;
+                    }
+                }
+            }
+            _infoUpdatetimer.Start();
         }
     }
 }
